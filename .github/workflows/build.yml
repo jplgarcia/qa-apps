@@ -1,0 +1,86 @@
+name: build
+
+# Builds every snapshot twice (reproducibility), checks the template hashes against hashes.txt on amd64 and
+# arm64, and on a version tag (v*) attaches the snapshots (.tar.gz), SHA256SUMS and template hashes to a
+# GitHub release.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x build/*.sh foreclose-app/build.sh fixtures/build.sh scripts/*.sh
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache kernel and rootfs (sha256-checked on every build anyway)
+        uses: actions/cache@v4
+        with:
+          path: .cache/downloads
+          key: machine-images-${{ hashFiles('versions.env') }}
+
+      - name: Build all snapshots
+        run: make all
+
+      - name: Rebuild everything and require identical template hashes
+        run: make reproducible
+
+      - name: Compare with the recorded hashes (hashes.txt)
+        run: make verify
+
+      - name: Package
+        if: matrix.runner == 'ubuntu-24.04'
+        run: make dist
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.runner == 'ubuntu-24.04'
+        with:
+          name: snapshots
+          path: dist/
+          retention-days: 7
+          compression-level: 0
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [lint, build]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: snapshots
+          path: dist
+      - name: Create the release with snapshots, SHA256SUMS and template hashes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Snapshots built with cartesi-machine 0.21.0 from rollups-node $(grep '^NODE_TAG=' versions.env | cut -d= -f2) ($(grep '^NODE_COMMIT=' versions.env | cut -d= -f2))."
+            echo "Each archive extracts to <name>/, the directory passed to \`cartesi-rollups-cli deploy application\`."
+            echo
+            echo '| snapshot | template hash |'
+            echo '|---|---|'
+            awk '{print "| " $1 " | `" $2 "` |"}' dist/template-hashes.txt
+          } > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag \
+            dist/*.tar.gz dist/SHA256SUMS dist/template-hashes.txt
