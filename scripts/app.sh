@@ -15,7 +15,9 @@
 set -euo pipefail
 . "$(dirname "$0")/lib.sh"
 
+usage() { sed -n '2,/^set -euo/p' "$0" | sed '$d; s/^# \{0,1\}//'; }
 CMD="${1:-}"; [ $# -gt 0 ] && shift
+case "$CMD" in -h|--help|'') usage; exit 0 ;; esac
 DEPLOYMENT='' NETWORK='' APP='' AMOUNT='' MINT=0 OUTPUT_INDEX='' ACCOUNT=''
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -26,7 +28,7 @@ while [ $# -gt 0 ]; do
     --mint) MINT=1; shift ;;
     --output-index) OUTPUT_INDEX="$2"; shift 2 ;;
     --account) ACCOUNT="$2"; shift 2 ;;
-    -h|--help) sed -n '2,/^set -euo/p' "$0" | sed '$d; s/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) usage; exit 0 ;;
     *) die "unknown argument $1 (see --help)" ;;
   esac
 done
