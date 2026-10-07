@@ -1,12 +1,12 @@
 # qa-apps build entry point. Everything runs in Docker (builder image from the rollups-node tag).
-#   make foreclose-app NETWORK=devnet|sepolia|base-sepolia   one snapshot, prints its template hash
+#   make foreclose-app NETWORK=devnet|sepolia|base-sepolia|op-sepolia   one snapshot, prints its template hash
 #   make foreclose-apps                                       all networks
 #   make fixtures                                             node terminal-state fixtures
 #   make all                                                  everything
 #   make reproducible                                         rebuild everything and require identical hashes
 #   make verify                                               compare out/*.hash with hashes.txt
 #   make dist                                                 out/ -> dist/*.tar.gz + SHA256SUMS + template-hashes.txt
-NETWORKS := devnet sepolia base-sepolia
+NETWORKS := devnet sepolia base-sepolia op-sepolia
 NETWORK ?=
 
 .PHONY: all foreclose-app foreclose-apps fixtures reproducible verify dist clean

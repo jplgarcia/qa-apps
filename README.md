@@ -38,6 +38,7 @@ result; machine-readable copy in [`hashes.txt`](hashes.txt), checked by `make ve
 | devnet | 31337 | TestUsdc `0x7a051EDffC0884cd88d4a377F4C87BE074CF6c81` | `0x1a7e95387d77a5675cc3a4e9d787df0a20f9affeaa9299c9df4e7c1ea2cf55a1` |
 | sepolia | 11155111 | Circle USDC `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` | `0xc8d32348961ebb32d94ebfba3385e67825463d5a8b4248a13e386fe4cbdbb202` |
 | base-sepolia | 84532 | Circle USDC `0x036CbD53842c5426634e7929541eC2318f3dCF7e` | `0x971967f8144685a4c69865076eeb3913b23f7aefb5925c1fc17909a7ef77251a` |
+| op-sepolia | 11155420 | Circle USDC `0x5fd84259d66Cd46123540766Be93DFE6D43130D7` | `0x4a6e93fec79c8cbfa410020218f10f437a149e31fa885336952392f9052ab4d1` |
 
 The devnet hash equals the node's own `applications/erc20-withdrawal-dapp` built from the tag. The devnet TestUsdc
 does not exist on testnets; there the app trusts Circle's test USDC. Trusted portal on every network: Erc20Portal
@@ -86,7 +87,7 @@ cartesi-machine --ram-length=128Mi \
 Requirements: Docker (BuildKit), git, curl, make, bash. About 3 GB of disk for the builder image and outputs.
 
 ```bash
-make foreclose-app NETWORK=devnet      # or sepolia | base-sepolia; prints "<name> <template hash>"
+make foreclose-app NETWORK=devnet      # or sepolia | base-sepolia | op-sepolia; prints "<name> <template hash>"
 make foreclose-apps                    # the three networks
 make fixtures                          # echo + the five terminal fixtures
 make all && make reproducible && make verify   # what CI runs
@@ -155,9 +156,10 @@ USD builders (same factory and SafeErc20Transfer on every network, salt 0):
 | devnet | TestUsdc | `0xB4D253c7a110241561B3eD6d632846dF7d4e9Af7` (exists on the devnet; it is the devnet's `TestUsdWithdrawalOutputBuilder`) |
 | sepolia | Circle USDC | `0x4B533eb2C61C47891a95C737E1DC3156DEd29622` (predicted; created by the first deploy if absent) |
 | base-sepolia | Circle USDC | `0x262F590a8C527c3Aa4a7abd38EfD1666d02AeDB9` (predicted; created by the first deploy if absent) |
+| op-sepolia | Circle USDC | `0x5B7d6Dd76902b5ec1268cAce0327a77D77b3198D` (predicted; created by the first deploy if absent) |
 
-The testnet addresses were computed with `calculateUsdWithdrawalOutputBuilderAddress` on the devnet factory (same
-address and constructor argument); `deploy.sh` recomputes them on the target chain.
+The testnet addresses were read with `calculateUsdWithdrawalOutputBuilderAddress` on each testnet's own factory
+(2026-10-07; none of them existed yet); `deploy.sh` recomputes them on the target chain.
 
 ### Deploy on the devnet
 
@@ -173,7 +175,7 @@ CARTESI_AUTH_PRIVATE_KEY=<deployer> scripts/deploy.sh --network devnet --snapsho
   --guardian <guardian address> --claim-staging-period 10 --epoch-length 5
 ```
 
-### Deploy on Sepolia / Base Sepolia
+### Deploy on Sepolia / Base Sepolia / OP Sepolia
 
 1. Run a rollups-node v2.0.0-alpha.13 against the testnet (its database, `CARTESI_BLOCKCHAIN_HTTP_ENDPOINT` = the
    testnet RPC, the alpha.10 contract addresses of `networks/<network>.env`).
@@ -191,9 +193,14 @@ CARTESI_AUTH_PRIVATE_KEY=<deployer key from your wallet> scripts/deploy.sh --net
 On a public chain pick a claim staging period that gives the guardian time to react (hundreds of blocks), and keep
 the deployment record: it is what the emergency runbook uses.
 
-Faucets: Circle test USDC (Sepolia, Base Sepolia) <https://faucet.circle.com>; Sepolia ETH, e.g.
+On the L2s (Base Sepolia, OP Sepolia) a block only becomes `finalized` once its batch is finalized on L1, so with the
+node's default observation block (`finalized`) inputs, claims and output execution trail the L2 head by much more
+than on Sepolia. Account for it when timing the staging period and when measuring latencies.
+
+Faucets: Circle test USDC (Sepolia, Base Sepolia, OP Sepolia) <https://faucet.circle.com>; Sepolia ETH, e.g.
 <https://cloud.google.com/application/web3/faucet/ethereum/sepolia> or <https://www.alchemy.com/faucets/ethereum-sepolia>;
-Base Sepolia ETH, e.g. <https://portal.cdp.coinbase.com/products/faucet>.
+Base Sepolia ETH, e.g. <https://portal.cdp.coinbase.com/products/faucet>; OP Sepolia ETH, e.g.
+<https://console.optimism.io/faucet> or bridge Sepolia ETH through the OP Sepolia standard bridge.
 
 ### `scripts/app.sh`: normal use
 ```bash

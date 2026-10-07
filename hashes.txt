@@ -4,6 +4,7 @@
 foreclose-app-devnet            0x1a7e95387d77a5675cc3a4e9d787df0a20f9affeaa9299c9df4e7c1ea2cf55a1
 foreclose-app-sepolia           0xc8d32348961ebb32d94ebfba3385e67825463d5a8b4248a13e386fe4cbdbb202
 foreclose-app-base-sepolia      0x971967f8144685a4c69865076eeb3913b23f7aefb5925c1fc17909a7ef77251a
+foreclose-app-op-sepolia        0x4a6e93fec79c8cbfa410020218f10f437a149e31fa885336952392f9052ab4d1
 echo                            0x414992c2b62ee801810fac29d354e16afe1835d3d7a4bd91c2bae0419f8e03fd
 mcycle-overflow                 0xa4ed1b9dbcbc76c6117a8d8823bd024fb9baa863b5bbc8dc0dfa9d54ce315fdf
 unexpected-yield                0xe939f84f00b2918149904e2a46b70e88ed72e3f60625b8891d02935ada92ceb6

@@ -3,7 +3,7 @@
 # Needs a first build in $OUT (make all). The rebuilt copies are deleted afterwards.
 set -euo pipefail
 . "$(dirname "$0")/lib.sh"
-NETWORKS="${NETWORKS:-devnet sepolia base-sepolia}"
+NETWORKS="${NETWORKS:-devnet sepolia base-sepolia op-sepolia}"
 FIXTURES="echo mcycle-overflow unexpected-yield invalid-outputs-root invalid-outputs-root-length invalid-template-outputs-root"
 SFX=.rebuild
 for n in $NETWORKS; do "$QA_ROOT/foreclose-app/build.sh" "$n" "foreclose-app-$n$SFX" >/dev/null; done

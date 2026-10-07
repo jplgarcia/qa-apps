@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the foreclose-app machine snapshot for one network.
 #
-#   foreclose-app/build.sh <devnet|sepolia|base-sepolia> [output-name]
+#   foreclose-app/build.sh <devnet|sepolia|base-sepolia|op-sepolia> [output-name]
 #
 # Output: $OUT/<output-name>/ (default foreclose-app-<network>), a `cartesi-machine --store` dir accepted by
 # `cartesi-rollups-cli deploy application`, plus $OUT/<output-name>.hash (template hash). The only per-network
@@ -13,7 +13,7 @@ set -euo pipefail
 . "$(dirname "$0")/../build/lib.sh"
 
 NETWORK="${1:-}"
-[ -n "$NETWORK" ] || die "usage: $0 <devnet|sepolia|base-sepolia> [output-name]"
+[ -n "$NETWORK" ] || die "usage: $0 <devnet|sepolia|base-sepolia|op-sepolia> [output-name]"
 NET_FILE="$QA_ROOT/networks/$NETWORK.env"
 [ -f "$NET_FILE" ] || die "unknown network '$NETWORK' (no $NET_FILE)"
 # shellcheck disable=SC1090
