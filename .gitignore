@@ -1,0 +1,4 @@
+# build outputs and caches (never committed)
+/out/
+/.cache/
+/dist/

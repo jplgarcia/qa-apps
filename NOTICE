@@ -1,0 +1,25 @@
+qa-apps
+Copyright 2026 the qa-apps authors
+
+This repository contains material derived from cartesi/rollups-node
+(https://github.com/cartesi/rollups-node), tag v2.0.0-alpha.13,
+commit 36155487d8bcb1daca5d683b8fa4ec65feba3ab7,
+(c) Cartesi and individual authors (see AUTHORS in that repository),
+licensed under the Apache License, Version 2.0:
+
+  - foreclose-app/install.sh is a verbatim copy of
+    test/dapps/erc20-withdrawal/install.sh (unmodified; byte-identity with the
+    tag is checked by the build because it is part of the machine template).
+  - The machine build commands in foreclose-app/build.sh and fixtures/build.sh
+    reproduce the Makefile targets applications/erc20-withdrawal-dapp,
+    applications/echo-dapp, applications/mcycle-overflow-dapp,
+    applications/unexpected-yield-dapp and applications/invalid-*-dapp.
+  - The fixture generator (test/tooling/terminalmachine) and the builder
+    image (Dockerfile stage go-prepare) are NOT copied: the build clones the
+    tag, checks the commit, and uses them from there.
+
+The machine snapshots also embed third-party binaries that are downloaded at
+build time and checked against test/dependencies.sha256 of the same tag:
+  - linux-6.5.13-ctsi-2-v0.21.0.bin (cartesi/machine-linux-image v0.21.0)
+  - rootfs-tools.ext2 (cartesi/machine-guest-tools v0.18.0)
+Their licenses are the ones published with those releases.
