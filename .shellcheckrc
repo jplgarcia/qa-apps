@@ -1,0 +1,3 @@
+# sourced files are resolved at run time ($(dirname "$0")); `A && B || die` is the intended guard idiom
+external-sources=true
+disable=SC1091,SC2015,SC2153,SC2012

@@ -16,7 +16,7 @@ set -euo pipefail
 . "$(dirname "$0")/lib.sh"
 
 CMD="${1:-}"; [ $# -gt 0 ] && shift
-DEPLOYMENT= NETWORK= APP= AMOUNT= MINT=0 OUTPUT_INDEX= ACCOUNT=
+DEPLOYMENT='' NETWORK='' APP='' AMOUNT='' MINT=0 OUTPUT_INDEX='' ACCOUNT=''
 while [ $# -gt 0 ]; do
   case "$1" in
     --deployment) DEPLOYMENT="$2"; shift 2 ;;
