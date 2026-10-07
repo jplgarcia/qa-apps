@@ -73,7 +73,7 @@ builder_image() {
       --label "qa-apps.node-commit=$NODE_COMMIT" -t "$BUILDER_IMAGE" "$NODE_SRC" >/dev/null
   fi
   local v
-  v="$(docker run --rm --entrypoint cartesi-machine "$BUILDER_IMAGE" --version | head -1)"
+  v="$(docker run --rm --entrypoint cartesi-machine "$BUILDER_IMAGE" --version | sed -n 1p)"  # sed reads to EOF: head closes the pipe early and fails under pipefail
   [ "$v" = "cartesi-machine $EMULATOR_VERSION" ] || die "builder has '$v', expected cartesi-machine $EMULATOR_VERSION"
 }
 
