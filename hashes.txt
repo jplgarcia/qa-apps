@@ -1,0 +1,12 @@
+# Expected template hashes (cartesi-machine-stored-hash = hash_tree.sht@0x60).
+# Every line was built twice with identical results; `make verify` compares a build against this file.
+# name                          template hash
+foreclose-app-devnet            0x1a7e95387d77a5675cc3a4e9d787df0a20f9affeaa9299c9df4e7c1ea2cf55a1
+foreclose-app-sepolia           0xc8d32348961ebb32d94ebfba3385e67825463d5a8b4248a13e386fe4cbdbb202
+foreclose-app-base-sepolia      0x971967f8144685a4c69865076eeb3913b23f7aefb5925c1fc17909a7ef77251a
+echo                            0x414992c2b62ee801810fac29d354e16afe1835d3d7a4bd91c2bae0419f8e03fd
+mcycle-overflow                 0xa4ed1b9dbcbc76c6117a8d8823bd024fb9baa863b5bbc8dc0dfa9d54ce315fdf
+unexpected-yield                0xe939f84f00b2918149904e2a46b70e88ed72e3f60625b8891d02935ada92ceb6
+invalid-outputs-root            0x2fbd699deac71f4156dbc5550eeaf79124bc4e83ab7a3b0f1b4fabac9422138b
+invalid-outputs-root-length     0xe60974661aba54cdb95766fd8891a16a0b652c0c34c1664f30a648d38ee41b31
+invalid-template-outputs-root   0xfd3f877c37d13722878006d89669d2ae26c956fff79d3f494474bc004e23b902
